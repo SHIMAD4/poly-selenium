@@ -15,7 +15,9 @@ describe('Тесты Расписания', function() {
     })
 
     after(async () => {
-        await driver.quit()
+        if (driver) {
+            await driver.quit()
+        }
     })
 
     afterEach(async function() {
@@ -31,6 +33,7 @@ describe('Тесты Расписания', function() {
     it('должен перейти на страницу расписания', async () => {
         await schedulePage.clickScheduleButton()
         await driver.sleep(1000)
+        console.log('Шаг 1. Перешел на страницу расписания')
     })
 
     it('должен открыть расписание на сайте в новой вкладке', async () => {
@@ -40,6 +43,8 @@ describe('Тесты Расписания', function() {
         let handles = await driver.getAllWindowHandles()
         assert.equal(handles.length, 2, "Ожидалось, что будет открыта новая вкладка")
         await driver.switchTo().window(handles[1])
+
+        console.log('Шаг 2. Открыл расписание на сайте в новой вкладке')
     })
 
     it('должен ввести номер группы и отобразить результаты поиска', async () => {
@@ -49,10 +54,33 @@ describe('Тесты Расписания', function() {
         let searchResult = await driver.findElement(schedulePage.searchResultLocator)
         let resultText = await searchResult.getText()
         assert.ok(resultText.includes('221-322'), "В результатах поиска не отображается искомая группа")
+
+        console.log('Шаг 3. Ввел номер группы и отобразил результаты поиска')
     })
 
     it('должен открыть страницу расписания выбранной группы', async () => {
         await schedulePage.clickSearchResult()
         await driver.sleep(3000)
+
+        console.log('Шаг 4. Открыл страницу расписания выбранной группы')
+    })
+
+    it('должен выделить текущий день недели в расписании', async () => {
+        let isHighlighted = await schedulePage.isCurrentDayHighlighted()
+        assert.ok(isHighlighted, "Текущий день недели не выделен в расписании")
+
+        let schedule = await schedulePage.getHighlightedDaySchedule()
+        console.log(`Текущий день недели: ${schedule.dayTitle}`)
+        for (let pair of schedule.schedule) {
+            console.log(`Время: ${pair.time}`)
+            for (let lesson of pair.lessons) {
+                console.log(`Аудитория: ${lesson.auditory}`)
+                console.log(`Занятие: ${lesson.lessonName}`)
+                console.log(`Преподаватель: ${lesson.teacher}`)
+                console.log(`Даты: ${lesson.dates}`)
+            }
+        }
+
+        console.log('Шаг 5. Выделил текущий день недели в расписании и вывел его в консоль')
     })
 })
