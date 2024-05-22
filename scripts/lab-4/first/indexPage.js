@@ -4,7 +4,7 @@ class StorePage {
     constructor(driver) {
         this.driver = driver
         this.url = 'https://www.muztorg.ru/'
-        this.categoryButton = By.xpath("//div[@class='catalog-menu__i ']//a[@href='/category/gitar']")
+        this.categoryButton = By.xpath("//div[@class='catalog-menu__i ']//a[@href='/category/gitary']")
         this.subCategoryButton = By.xpath("//div[@title='Электрогитары']/..")
         this.tag = By.css('.seo-tags__slider__link')
         this.label = By.css('.catalog-top-filter label[for]')
